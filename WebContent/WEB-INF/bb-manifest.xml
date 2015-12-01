@@ -26,7 +26,7 @@
     			<link>
     				<type value="course_tool"/>
 		            <name value="Carpeta Electronica Docente"/>
-		            <url value="index.jsp"/>
+		            <url value="Index.jsp"/>
 		            <description value="."/>
     			</link>
     		</links>
