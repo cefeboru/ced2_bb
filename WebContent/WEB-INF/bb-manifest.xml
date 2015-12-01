@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="http://www.blackboard.com/bb-manifest-plugin.xsd">
+	<plugin>
+		<name value="B2 CED Asistencia"/>
+		<handle value="b2_ced_asistencia"/>
+		<description value="Intercats with the CED"/>
+		<version value= "1.0.1"/>
+		<requires>
+    		<bbversion value="9.1.0"/>
+    	</requires>
+    <vendor>
+      <id value="lnoh"/>
+      <name value="Laureate Network Office - IT DEV Support"/>
+      <url value="www.google.com" />
+      <description value="IT Support Services Team" />
+    </vendor>
+    <http-actions>
+    	<config value="settings.jsp" />
+    </http-actions> 
+    <content-handlers>
+    </content-handlers>
+    <application-defs>
+    	<application handle="reg_assistance_CED" name="CED B2" is-course-tool="true" is-org-tool="false" can-allow-guest="true" use-ssl="false">
+    		<description>Register student assistance in CED.</description>
+    		<links>
+    			<link>
+    				<type value="course_tool"/>
+		            <name value="Carpeta Electronica Docente"/>
+		            <url value="index.jsp"/>
+		            <description value="."/>
+    			</link>
+    		</links>
+    	</application>
+    </application-defs>
+    
+    <schema-dirs>
+	  <schema-dir dir-name="tabledefinitions" />
+	</schema-dirs>
+    
+    <permissions>
+      <permission type="socket" name="*" actions="connect,resolve" />
+      <permission type="java.io.FilePermission" name="&lt;&lt;ALL FILES&gt;&gt;" actions="read,write,delete" />
+      <permission type="java.lang.RuntimePermission" name="db.connection.*" />
+	  <permission type="attribute" name="user.authinfo" actions="get,set" />
+	  <permission type="attribute" name="user.personalinfo" actions="get,set" />
+	  <permission type="persist" name="User" actions="*" />
+	  <permission type="persist" name="UserRole" actions="*" />
+      <permission type="persist" name="CourseToc" actions="*" />
+      <permission type="persist" name="Announcement" actions="*" />
+      <permission type="persist" name="Course" actions="*" />
+      <permission type="persist" name="CourseMembership" actions="*" />
+    </permissions>
+    
+	</plugin>
+</manifest>
