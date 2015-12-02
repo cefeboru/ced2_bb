@@ -1,0 +1,23 @@
+<schema name="lnoh_ced_response">
+
+  <table name="lnoh_ced_response">
+    <comment>WebService responses</comment>
+
+    <column name="id_pk1" data-type="int" nullable="false" identity="true" />
+    <column name="student_rut" data-type="char(12)" nullable="false" />
+    <column name="course_id" data-type="char(20)" nullable="false" />
+    <column name="assistance_date" data-type="int" nullable="false" />
+    <column name="webservice_date" data-type="int" nullable="false" />
+    <column name="response_code" data-type="int" nullable="false" />
+
+    <primary-key name="lnoh_response_pk">
+      <columnref name="id_pk1"/>
+    </primary-key>
+
+    <index name="lnoh_assistance_date_ak1" unique="true">
+      <columnref name="student_rut" />
+      <columnref name="assistance_date" />
+    </index>
+
+  </table>
+</schema>

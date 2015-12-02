@@ -34,7 +34,7 @@
     </application-defs>
     
     <schema-dirs>
-	  <schema-dir dir-name="tabledefinitions" />
+	  <schema-dir dir-name="modulos" />
 	</schema-dirs>
     
     <permissions>

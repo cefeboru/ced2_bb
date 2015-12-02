@@ -21,6 +21,8 @@ public class Index {
 	private WSAsistenciaSoapProxy cedProxy;
 	private Context ctx;
 	private String courseID;
+	private String studentRut;
+	private String token;
 	
 	
 	public static void main(String [] args){
@@ -34,10 +36,8 @@ public class Index {
 		    ResultSet rSet = selectQuery.executeQuery();
 		    rSet.getString(0);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ConnectionNotAvailableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -45,31 +45,34 @@ public class Index {
 	
 	public Index(HttpServletRequest request){
 		ctx = ContextManagerFactory.getInstance().setContext(request);
-	}
-	
-	public void registerAsistance(HttpServletRequest request){
 		cedProxy = new WSAsistenciaSoapProxy();
-		Context c = ContextManagerFactory.getInstance().setContext(request);
 		
-		String token = getToken();
-		
+		courseID = ctx.getCourse().getCourseId();
+		studentRut = ctx.getUser().getBatchUid();
+	}
+	
+	public void registrarAsistencia(HttpServletRequest request){
 		
 	}
 	
-	private String getToken(){
+	private void setTokenFromWS(){
 		try{
 			Response r = cedProxy.loginMoodle("Moodle", "ET33OI8994FAQ351P");
 			System.out.println(r.getMensaje());
-			return r.getMensaje();
+			token =  r.getMensaje();
 		}catch(RemoteException e){
 			e.printStackTrace();
-			return "Error Generating Token";
+			token = "Error Generating Token";
 		}
+	}
+	
+	public String getToken(){
+		setTokenFromWS();
+		return token;
 	}
 
 	public String getCourseID() {
 		try{
-			courseID = ctx.getCourse().getCourseId();
 			return courseID;
 		}catch(Exception ex){
 			return ex.getMessage();

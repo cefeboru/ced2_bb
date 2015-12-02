@@ -2,12 +2,14 @@
 
 <%@ page import="blackboard.platform.context.ContextManagerFactory" %>
 <%@ page import="blackboard.platform.context.ContextManager" %>
+<%@ page import="org.tempuri.Index" %>
 
 
 <%@taglib uri="/bbData" prefix="bbData" %>
 
 <bbData:context id="ctx">
-	
-	<p>....</p>
-	
+	<%
+	Index index = new Index(request); 
+	out.print("<p>" + index.getCourseID() + "</p>");
+	%>
 </bbData:context>
