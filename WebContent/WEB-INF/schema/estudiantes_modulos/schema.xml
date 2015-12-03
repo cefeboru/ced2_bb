@@ -3,7 +3,7 @@
   <table name="lnoh_modulos_estudiantes">
     <comment>Relacion Estudiantes Modulos</comment>
 
-    <column name="pk1" data-type="serial" nullable="false" identity="true" />
+    <column name="pk1" data-type="int" nullable="false" identity="true" />
     <column name="rut_id" data-type="int" nullable="false" identity="false" />
     <column name="carrera_id" data-type="int" nullable="false" identity="false" />
     <column name="curso_id" data-type="char(6)" nullable="false" identity="false" />
@@ -21,5 +21,3 @@
 
   </table>
 </schema>
-
-

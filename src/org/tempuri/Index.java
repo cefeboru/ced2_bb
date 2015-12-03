@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 import blackboard.db.BbDatabase;
 import blackboard.db.ConnectionManager;
@@ -17,38 +18,84 @@ import blackboard.db.ConnectionNotAvailableException;
 import blackboard.platform.context.Context;
 import blackboard.platform.context.ContextManagerFactory;
 
+import java.util.Date;
+
 public class Index {
 	private WSAsistenciaSoapProxy cedProxy;
 	private Context ctx;
 	private String courseID;
-	private String studentRut;
+	private String studentRut = "15543201";
 	private String token;
+	private String modulo;
+	//public String mensajeWS;
+	private Connection conn = null;
+	private ConnectionManager cManager = null; 
+	private PreparedStatement selectQuery = null;
+	ResultSet rSet= null;
 	
 	
 	public static void main(String [] args){
-		Connection conn = null;
-		try{
-			ConnectionManager cManager = null; 
-		    PreparedStatement selectQuery = null;
-		    cManager = BbDatabase.getDefaultInstance().getConnectionManager();
-		    conn = cManager.getConnection();
-		    selectQuery = conn.prepareStatement("QUERY", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		    ResultSet rSet = selectQuery.executeQuery();
-		    rSet.getString(0);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ConnectionNotAvailableException e) {
-			e.printStackTrace();
-		}
+
 	}
 	// ---- End Main ----
 	
 	public Index(HttpServletRequest request){
+		//Set the BB Context
 		ctx = ContextManagerFactory.getInstance().setContext(request);
+		//Instance the WS Class
 		cedProxy = new WSAsistenciaSoapProxy();
 		
 		courseID = ctx.getCourse().getCourseId();
-		studentRut = ctx.getUser().getBatchUid();
+		//studentRut = ctx.getUser().getBatchUid();
+		
+		//Open the DB connection
+		try{
+			cManager = BbDatabase.getDefaultInstance().getConnectionManager();
+		    conn = cManager.getConnection();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		modulo = getModulo();
+		token = getToken();
+		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+		Date now = new Date();
+		String fechaAsistencia = sdf.format(now);
+		try {
+			Response r = cedProxy.registrarAsistencia(modulo, studentRut, fechaAsistencia, token);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		
+
+	}
+	
+	public String getModulo(){
+		String modulo = "";
+		
+		try{
+		    selectQuery = conn.prepareStatement(
+		    		"select * from lnoh_modulos_estudiantes where rut_id=" + studentRut + " and curso_id='" + courseID +"';",
+		    		ResultSet.TYPE_FORWARD_ONLY, 
+		    		ResultSet.CONCUR_READ_ONLY);
+		    rSet = selectQuery.executeQuery();
+		    
+		    if(rSet.next()){
+		    	String seccion;
+		    	String anio;
+		    	String semestre;
+		    	seccion = rSet.getString("seccion");
+		    	anio = rSet.getString("anio");
+		    	semestre = rSet.getString("semestre");
+		    	modulo = courseID + "-" + seccion + "-" + anio + "-" + semestre;
+		    } else {
+		    	//TODO Que hacer cuando no encuentre data;
+		    	return "No se encontro el modulo en la BD";
+		    }
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+    	return modulo;
 	}
 	
 	public void registrarAsistencia(HttpServletRequest request){

@@ -35,6 +35,7 @@
     
     <schema-dirs>
 	  <schema-dir dir-name="estudiantes_modulos" />
+	  <schema-dir dir-name="wsResponses" />
 	</schema-dirs>
     
     <permissions>
