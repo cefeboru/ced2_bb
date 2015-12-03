@@ -23,29 +23,23 @@ import java.util.Date;
 public class Index {
 	private WSAsistenciaSoapProxy cedProxy;
 	private Context ctx;
-	private String courseID;
-	private String studentRut = "15543201";
+	private String id_curso;
+	private String rut_estudiante = "15543201";
 	private String token;
 	private String modulo;
 	//public String mensajeWS;
 	private Connection conn = null;
 	private ConnectionManager cManager = null; 
-	private PreparedStatement selectQuery = null;
+	private PreparedStatement queryString = null;
 	ResultSet rSet= null;
 	
-	
-	public static void main(String [] args){
-
-	}
-	// ---- End Main ----
-	
-	public Index(HttpServletRequest request){
+	public String Index(HttpServletRequest request){
 		//Set the BB Context
 		ctx = ContextManagerFactory.getInstance().setContext(request);
 		//Instance the WS Class
 		cedProxy = new WSAsistenciaSoapProxy();
 		
-		courseID = ctx.getCourse().getCourseId();
+		id_curso = ctx.getCourse().getCourseId();
 		//studentRut = ctx.getUser().getBatchUid();
 		
 		//Open the DB connection
@@ -55,30 +49,46 @@ public class Index {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
-		
+		//get the course module from the DB
 		modulo = getModulo();
+		
+		//Call the WS method loginMoodle to get the Token
 		token = getToken();
+		
+		//Format the date to be sent to the WS
 		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
 		Date now = new Date();
 		String fechaAsistencia = sdf.format(now);
+		//Call the WS method registrarAsistencia 
 		try {
-			Response r = cedProxy.registrarAsistencia(modulo, studentRut, fechaAsistencia, token);
+			Response r = cedProxy.registrarAsistencia(modulo, rut_estudiante, fechaAsistencia, token);
+			if(!(r.getCodigo() == 0 || r.getCodigo() == 10)){
+				//TODO send mail to users
+			}
+			queryString = conn.prepareStatement(
+		    		"insert into lnoh_ced_response(rut_estudiante,id_curso,fecha_asistencia,fecha_ws,codigo) VALUES " 
+		    				+ "(" + rut_estudiante + ",'" + id_curso.toString() + "'," + fechaAsistencia + "," + System.currentTimeMillis()/1000L + "",
+		    		ResultSet.TYPE_FORWARD_ONLY, 
+		    		ResultSet.CONCUR_READ_ONLY);
+			
 		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-
+		return "";
 	}
 	
 	public String getModulo(){
 		String modulo = "";
 		
 		try{
-		    selectQuery = conn.prepareStatement(
-		    		"select * from lnoh_modulos_estudiantes where rut_id=" + studentRut + " and curso_id='" + courseID +"';",
+		    queryString = conn.prepareStatement(
+		    		"select * from lnoh_modulos_estudiantes where rut_id=" + rut_estudiante + " and curso_id='" + id_curso +"';",
 		    		ResultSet.TYPE_FORWARD_ONLY, 
 		    		ResultSet.CONCUR_READ_ONLY);
-		    rSet = selectQuery.executeQuery();
+		    rSet = queryString.executeQuery();
 		    
 		    if(rSet.next()){
 		    	String seccion;
@@ -87,7 +97,7 @@ public class Index {
 		    	seccion = rSet.getString("seccion");
 		    	anio = rSet.getString("anio");
 		    	semestre = rSet.getString("semestre");
-		    	modulo = courseID + "-" + seccion + "-" + anio + "-" + semestre;
+		    	modulo = id_curso + "-" + seccion + "-" + anio + "-" + semestre;
 		    } else {
 		    	//TODO Que hacer cuando no encuentre data;
 		    	return "No se encontro el modulo en la BD";
@@ -120,7 +130,7 @@ public class Index {
 
 	public String getCourseID() {
 		try{
-			return courseID;
+			return id_curso;
 		}catch(Exception ex){
 			return ex.getMessage();
 		}

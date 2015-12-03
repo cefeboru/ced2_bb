@@ -9,11 +9,10 @@
 <%@taglib uri="/bbData" prefix="bbData" %>
 
 <bbData:context id="ctx">
-	<p><%
-		Index in = new Index(request);
-		Date now = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
-		out.print(sdf.format(now));
-		
-	%></p>
+	<% Index in = new Index(); %>
+	<p> Respuesta del WS:<% out.print(in.Index(request)); %></p>
+	<p>Course Id:<% out.print(in.getCourseID()); %></p>
+	<p>Token: <% out.print(in.getToken()); %></p>
+	<p>Modulo: <% out.print(in.getModulo()); %></p>
+	
 </bbData:context>

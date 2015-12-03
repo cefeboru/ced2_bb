@@ -40,11 +40,9 @@
     
     <permissions>
       <permission type="socket" name="*" actions="connect,resolve" />
-      <permission type="java.io.FilePermission" name="&lt;&lt;ALL FILES&gt;&gt;" actions="read,write,delete" />
       <permission type="java.lang.RuntimePermission" name="db.connection.*" />
 	  <permission type="attribute" name="user.authinfo" actions="get,set" />
 	  <permission type="attribute" name="user.personalinfo" actions="get,set" />
-	  <permission type="persist" name="User" actions="*" />
 	  <permission type="persist" name="UserRole" actions="*" />
       <permission type="persist" name="CourseToc" actions="*" />
       <permission type="persist" name="Announcement" actions="*" />
