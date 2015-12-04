@@ -62,6 +62,7 @@ public class Index {
 		//Call the WS method registrarAsistencia 
 		try {
 			Response r = cedProxy.registrarAsistencia(modulo, rut_estudiante, fechaAsistencia, token);
+			//0 = Exitoso , 10 = Asistencia ya registrada 
 			if(!(r.getCodigo() == 0 || r.getCodigo() == 10)){
 				//TODO send mail to users
 			}
