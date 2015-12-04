@@ -40,7 +40,7 @@ public class Index {
 		cedProxy = new WSAsistenciaSoapProxy();
 		
 		id_curso = ctx.getCourse().getCourseId();
-		//studentRut = ctx.getUser().getBatchUid();
+		//rut_estudiante = ctx.getUser().getUuid();
 		
 		//Open the DB connection
 		try{

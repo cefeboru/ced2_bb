@@ -3,22 +3,16 @@
   <table name="lnoh_ced_response">
     <comment>WebService responses</comment>
 
-    <!-- column name="id_pk1" data-type="int" nullable="false" identity="true" /-->
+    <column name="pk1" data-type="int" nullable="false" identity="true" />
     <column name="rut_estudiante" data-type="char(14)" nullable="false" />
     <column name="id_curso" data-type="char(20)" nullable="false" />
     <column name="fecha_asistencia" data-type="char(8)" nullable="false" />
     <column name="fecha_ws" data-type="int" nullable="false" />
     <column name="codigo" data-type="int" nullable="false" />
 
-    <primary-key name="lnoh_response_pk">
-      <columnref name="rut_estudiante"/>
-      <columnref name="id_curso"/>
+    <primary-key name="lnoh_response_pk1">
+      <columnref name="pk1"/>
     </primary-key>
-
-    <index name="lnoh_assistance_date_ak1" unique="true">
-      <columnref name="student_rut" />
-      <columnref name="fecha_ws" />
-    </index>
 
   </table>
 </schema>
